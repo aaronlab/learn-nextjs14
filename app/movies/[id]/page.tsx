@@ -1,15 +1,25 @@
+import { API_URL } from "../../(home)/page";
+
 export const metadata = {
   title: "Movie",
 };
 
-export default function MovieDetail(props: {
-  params: {
-    id: string;
-  };
-  searchParams: {
-    region: string;
-    page: string;
-  };
+async function getMovie(id: string) {
+  const response = await fetch(`${API_URL}/${id}`);
+  return response.json();
+}
+
+async function getVideos(id: string) {
+  const response = await fetch(`${API_URL}/${id}/videos`);
+  return response.json();
+}
+
+export default async function MovieDetail({
+  params: { id },
+}: {
+  params: { id: string };
 }) {
-  return <h1>Movie {props.params.id}</h1>;
+  const [movie, videos] = await Promise.all([getMovie(id), getVideos(id)]);
+
+  return <h1>{movie.title}</h1>;
 }
